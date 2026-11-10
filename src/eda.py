@@ -27,6 +27,7 @@ def quality(df: pd.DataFrame) -> None:
     print("결측", int(df.isna().sum().sum()), "/ 중복행", int(df.duplicated().sum()),
           "/ 중복 ID", int(df.customer_id.duplicated().sum()))
     print("이탈률", round(df.churned.mean(), 3))
+    print(df.describe().T.round(2).to_string())
     # 요금제와 요금은 1:1 → 중복 정보
     print("요금제별 요금 종류 수", df.groupby("subscription_type").monthly_fee.nunique().to_dict())
     # avg_watch_time_per_day ≈ watch_hours / (last_login_days + 1) → 파생 변수
@@ -50,6 +51,16 @@ def churn_by_numeric(df: pd.DataFrame) -> None:
         auc = u.statistic / (len(stay) * len(churn))
         print(f"{c:22s} 중앙값 유지={stay.median():.2f} 이탈={churn.median():.2f} "
               f"단변수AUC={max(auc, 1 - auc):.3f}")
+
+
+def churn_by_bins(df: pd.DataFrame) -> None:
+    """보고서에 인용하는 구간별 이탈률 (구간은 오른쪽 닫힘)."""
+    for c, bins in [("last_login_days", [-1, 7, 14, 30, 45, 60]),
+                    ("watch_hours", [-1, 2, 5, 10, 20, 200]),
+                    ("age", [17, 25, 35, 45, 55, 70])]:
+        t = df.groupby(pd.cut(df[c], bins), observed=True).churned.agg(["mean", "size"])
+        assert t["size"].sum() == len(df), f"{c} 구간이 전체를 덮지 않음"
+        print(c, {str(k): (round(float(r["mean"]), 3), int(r["size"])) for k, r in t.iterrows()})
 
 
 def plot(df: pd.DataFrame) -> None:
@@ -89,5 +100,6 @@ if __name__ == "__main__":
     quality(df)
     churn_by_category(df)
     churn_by_numeric(df)
+    churn_by_bins(df)
     plot(df)
     print("그림 저장:", FIG)
