@@ -90,6 +90,8 @@ if __name__ == "__main__":
     g = summary(df)
     pd.set_option("display.width", 220)
     print(g.round(3).to_string())
+    eng = g.loc[ORDER[2:5], "이탈자수"].sum()
+    print(f"장기 미접속·저시청 3개 세그먼트의 이탈자 비중: {eng}/{g.이탈자수.sum()} = {eng / g.이탈자수.sum():.3f}")
     print("\n고위험 레버별 '1개만 바꾸면 구제' 인원 (규칙 기준)\n", what_if(df).to_string())
     assert g.고객수.sum() == len(df), "세그먼트가 전체 고객을 덮지 않음"
     plot(g)

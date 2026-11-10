@@ -81,6 +81,7 @@ def main() -> None:
     print("\n세그먼트별 예측\n", seg.reindex(ORDER).round(3).to_string())
     wrong = out[out.churn_pred != out.churned]
     print("\n틀린 예측", len(wrong), "건, 세그먼트별", wrong.segment.value_counts().to_dict())
+    print("틀린 예측의 위험 점수 분포", wrong.risk_score.value_counts().sort_index().to_dict())
     plot(y, proba, out.churn_pred)
 
 
