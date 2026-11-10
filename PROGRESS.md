@@ -8,7 +8,7 @@
 - [x] 4. 모델링·예측 → `reports/03_model.md`. 고객별 예측 `src/predict.py` → `reports/predictions.csv`. 라벨 규칙 역추정 `src/risk_score.py` (점수>=3, 96.5%)
 - [x] 5. 세그먼트·액션 → `reports/04_segments.md`, `src/segment.py`
 - [x] 6. 결과물: `README.md` 에 전체 요약 (마크다운 보고서)
-- [ ] 7. 노션 정리 페이지 (EDA~모델링·예측 전체)
+- [x] 7. 노션 정리 페이지 (EDA~모델링·예측 전체, 사용자 노션의 비공개 초안). 수치는 verifier 독립 검증 후 게시
 
 ## 다음 할 일 (선택)
 - 웹 페이지/대시보드 버전, 발표 자료, 노트북 형태 등 사용자 요청 시
