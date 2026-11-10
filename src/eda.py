@@ -28,6 +28,8 @@ def quality(df: pd.DataFrame) -> None:
           "/ 중복 ID", int(df.customer_id.duplicated().sum()))
     print("이탈률", round(df.churned.mean(), 3))
     print(df.describe().T.round(2).to_string())
+    for c in CATS:
+        print(c, df[c].value_counts().to_dict())
     # 요금제와 요금은 1:1 → 중복 정보
     print("요금제별 요금 종류 수", df.groupby("subscription_type").monthly_fee.nunique().to_dict())
     # avg_watch_time_per_day ≈ watch_hours / (last_login_days + 1) → 파생 변수
