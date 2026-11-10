@@ -12,17 +12,14 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+from data import load
+
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "data" / "netflix_customer_churn.csv"
 FIG = ROOT / "reports" / "figures"
 
 CATS = ["subscription_type", "payment_method", "number_of_profiles",
         "gender", "region", "device", "favorite_genre"]
 NUMS = ["watch_hours", "last_login_days", "avg_watch_time_per_day", "age"]
-
-
-def load() -> pd.DataFrame:
-    return pd.read_csv(DATA)
 
 
 def quality(df: pd.DataFrame) -> None:
