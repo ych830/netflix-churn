@@ -31,7 +31,8 @@ def quality(df: pd.DataFrame) -> None:
     for c in CATS:
         print(c, df[c].value_counts().to_dict())
     # 요금제와 요금은 1:1 → 중복 정보
-    print("요금제별 요금 종류 수", df.groupby("subscription_type").monthly_fee.nunique().to_dict())
+    print("요금제별 요금 (min, max, 종류 수)",
+          df.groupby("subscription_type").monthly_fee.agg(["min", "max", "nunique"]).to_dict("index"))
     # avg_watch_time_per_day ≈ watch_hours / (last_login_days + 1) → 파생 변수
     derived = df.watch_hours / (df.last_login_days + 1)
     print("avg_watch 파생식 최대 오차", round((derived - df.avg_watch_time_per_day).abs().max(), 3))
@@ -52,7 +53,7 @@ def churn_by_numeric(df: pd.DataFrame) -> None:
         u = stats.mannwhitneyu(stay, churn)
         auc = u.statistic / (len(stay) * len(churn))
         print(f"{c:22s} 중앙값 유지={stay.median():.2f} 이탈={churn.median():.2f} "
-              f"단변수AUC={max(auc, 1 - auc):.3f}")
+              f"단변수AUC={max(auc, 1 - auc):.3f} Mann-Whitney p={u.pvalue:.2g}")
 
 
 def churn_by_bins(df: pd.DataFrame) -> None:
@@ -62,7 +63,8 @@ def churn_by_bins(df: pd.DataFrame) -> None:
                     ("age", [17, 25, 35, 45, 55, 70])]:
         t = df.groupby(pd.cut(df[c], bins), observed=True).churned.agg(["mean", "size"])
         assert t["size"].sum() == len(df), f"{c} 구간이 전체를 덮지 않음"
-        print(c, {str(k): (round(float(r["mean"]), 3), int(r["size"])) for k, r in t.iterrows()})
+        p = stats.chi2_contingency(pd.crosstab(pd.cut(df[c], bins), df.churned))[1]
+        print(c, f"카이제곱 p={p:.2g}", {str(k): (round(float(r["mean"]), 3), int(r["size"])) for k, r in t.iterrows()})
 
 
 def plot(df: pd.DataFrame) -> None:

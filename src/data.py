@@ -1,4 +1,4 @@
-"""데이터 로딩 (파일 접근은 이 모듈에서만)."""
+"""데이터 로딩 (입력 CSV 읽기는 이 모듈에서만)."""
 from pathlib import Path
 
 import pandas as pd
